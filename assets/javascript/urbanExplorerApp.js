@@ -86,6 +86,7 @@ $(document).on("click", ".imgButtons", function(){
 //query example https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.4228775,-122.085133&radius=3000&type=restaurant&keyword=vegan&key=AIzaSyBGnYxlsr-8atPpbWbMsM2crsD-kah9JAI
     console.log(currentURL);
     $.ajax({
+        headers: {  'Access-Control-Allow-Origin': 'htt://site allowed to access' },
         url:currentURL,
         method: "GET"
     }).then(function(response){

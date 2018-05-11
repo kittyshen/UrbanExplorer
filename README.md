@@ -17,7 +17,7 @@ In this project, we will be using google place and geo api to create sth for tra
 Download the zip file, unzip on the desktop, open index.html
 
 ## Link to the site
-[Click me](https://https://kittyshen.github.io/UrbanExplorer)
+[Click me](https://kittyshen.github.io/UrbanExplorer)
 
 
 ## Author 
