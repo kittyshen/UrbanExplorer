@@ -13,6 +13,22 @@
         <link rel="stylesheet" href="assets/css/style.css">
         <!-- Added link to the jQuery Library -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <style>
+            /* Always set the map height explicitly to define the size of the div
+                         * element that contains the map. */
+            /* #map {
+                height: 100%;
+            }
+            /* Optional: Makes the sample page fill the window. */
+        
+            /* html,
+            body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            } */ 
+        </style>
 </head>
 
 <body>
@@ -48,6 +64,8 @@
             
         </div>
         <div class="row" id="contentContainer">
+                <div id="map"></div>
+
         </div>
         <div class="row" id="foodButton Wrapper">
             <img class ="imgButtons" data-type = "vegan" src = "assets/images/foodIcons.png" alt = "imageButtons">
@@ -58,6 +76,7 @@
 
     <!--make sure to put javascript on the bottom to alter the DOM, otherwise DOM not defined, can't alter DOM content with js method or function-->
     <script src="assets/javascript/urbanExplorerApp.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGnYxlsr-8atPpbWbMsM2crsD-kah9JAI&libraries=places&callback=initMap" async defer></script>
 
 </body>
 

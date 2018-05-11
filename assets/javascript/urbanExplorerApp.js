@@ -71,6 +71,53 @@ $(document).on("click", "#searchButton", function(event){
     });
 });
 
+
+// testing google own method
+var map;
+var infowindow;
+
+function initMap() {
+  var pyrmont = {lat: 37.4140352, lng: -122.0932588};
+
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: pyrmont,
+    zoom: 15
+  });
+
+  infowindow = new google.maps.InfoWindow();
+  var service = new google.maps.places.PlacesService(map);
+  service.nearbySearch({
+    location: pyrmont,
+    radius: 2000,
+    type: ['restaurant'],
+    keyword:"chinese",
+  }, callback);
+}
+
+  service = new google.maps.places.PlacesService(map);
+  service.nearbySearch(request, callback);
+
+
+function callback(results, status) {
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    for (var i = 0; i < results.length; i++) {
+        var place = results[i];
+        console.log(place.name);
+        // console.log(place.place_id);
+        console.log(place.rating);
+        console.log(place.vicinity);
+        console.log("lat = " +place.geometry.location.lat());
+        console.log("lon = " +place.geometry.location.lng());
+        var types = String(place.types);
+        types = types.split(",");
+        console.log(types[0]);
+    //   createMarker(results[i]);
+    }
+  }
+}
+
+////******/
+
 //user click the imgButtons calling google place api
 
 var foodQueryVar;
@@ -87,7 +134,7 @@ $(document).on("click", ".imgButtons", function(){
     console.log(currentURL);
     $.ajax({
         // dataType: 'jsonp',
-        headers: { 'Access-Control-Allow-Origin' : '*'},
+        // headers: { 'Access-Control-Allow-Origin' : '*'},
         url:currentURL,
         method: "GET"
     }).then(function(response){
