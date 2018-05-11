@@ -1,11 +1,6 @@
 
-var gameArray = ["Beyond Two Souls", "Dark Souls 3", "Monster Hunter: World", "Detroit: Become Human", "Mass Effect 3", "Destiny 2"];
-// adding the following code to enable user retrive user added game names saved on local storage.
-console.log(localStorage.getItem("gameArrayInStorage"));
-if(JSON.parse(localStorage.getItem("gameArrayInStorage")) != null){
-    gameArray =JSON.parse(localStorage.getItem("gameArrayInStorage"));
-}    
-//render all the bottons according to the game array data
+var foodArray = ["drink", "coffee", "fastfood", "vegan", "asia", "steak"];
+
 var buttonHooker = $("#buttonGroup");  // create a variable to hook all buttons ad future user input append
 
 function renderButtons(arr){             // create a function to render current game array as  buttons
@@ -17,16 +12,9 @@ function renderButtons(arr){             // create a function to render current 
         buttonHooker.append(newButton);
     }
 }
-renderButtons(gameArray);   //render game array button to html page
+renderButtons(foodArray);   //render game array button to html page
 
-function renderUserButton(string){       // create a function to render user input as button
-    var newButton = $("<button>");
-    newButton.text(string);
-    newButton.attr("class","buttons text-center badge badge-pill badge-secondary");
-    newButton.attr("value",string);
-    buttonHooker.append(newButton);
-}
-// renderUserButton("New game");  // testing 
+
 
 function renderImg(obj){
     $("#gifContainer").html("");  // empty the container for new content;
@@ -74,7 +62,7 @@ $(document).on("click", "#searchButton", function(event){
 
 // testing google own method
 var map;
-var infowindow;
+// var infowindow;
 
 function initMap() {
   var pyrmont = {lat: 37.4228775, lng: -122.085133};
@@ -84,18 +72,16 @@ function initMap() {
     zoom: 15
   });
 
-  infowindow = new google.maps.InfoWindow();
+//   infowindow = new google.maps.InfoWindow();
   var service = new google.maps.places.PlacesService(map);
   service.nearbySearch({
     location: pyrmont,
-    radius: 2500,
+    radius: 3500,
     type: ['restaurant'],
-    keyword:"coffee",
+    keyword:'steak',
   }, callback);
 }
 
-//   service = new google.maps.places.PlacesService(map);
-//   service.nearbySearch(request, callback);
 
 
 function callback(results, status) {
@@ -111,7 +97,6 @@ function callback(results, status) {
         var types = String(place.types);
         types = types.split(",");
         console.log(types[0]);
-    //   createMarker(results[i]);
     }
   }
 }
@@ -129,19 +114,6 @@ $(document).on("click", ".imgButtons", function(){
     console.log(foodQueryVar);
     initMap();
 
-//     var currentURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lon+"&radius=3000&type=restaurant&keyword="+foodQueryVar+ "&key=AIzaSyBGnYxlsr-8atPpbWbMsM2crsD-kah9JAI";
-// //query example https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.4228775,-122.085133&radius=3000&type=restaurant&keyword=vegan&key=AIzaSyBGnYxlsr-8atPpbWbMsM2crsD-kah9JAI
-//     console.log(currentURL);
-//     $.ajax({
-//         // dataType: 'jsonp',
-//         // headers: { 'Access-Control-Allow-Origin' : '*'},
-//         url:currentURL,
-//         method: "GET"
-//     }).then(function(response){
-//         console.log(response);
-//         // $("#contentContainer").text(JSON.stringify(response));
-//         // renderImg(response);
-//     });
 });
 
 
@@ -159,16 +131,3 @@ $(document).on("click",".images",function(){
 
 });
 
-$("#add-game").on("click", function(event) {
-    event.preventDefault();
-    // This line of code will grab the input from the textbox
-    var game = $("#game-input").val().trim();
-    // The game from the textbox is then added to gameArray
-    if(game!= ''){
-        gameArray.push(game);
-        renderUserButton(game);
-        localStorage.setItem("gameArrayInStorage",JSON.stringify(gameArray));
-    }
-    //Render the new Button
-    $("#game-input").val("");
-})
