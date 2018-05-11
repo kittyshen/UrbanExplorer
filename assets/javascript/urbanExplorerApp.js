@@ -1,8 +1,7 @@
 
-
 var gameArray = ["Beyond Two Souls", "Dark Souls 3", "Monster Hunter: World", "Detroit: Become Human", "Mass Effect 3", "Destiny 2"];
 // adding the following code to enable user retrive user added game names saved on local storage.
-// console.log(localStorage.getItem("gameArrayInStorage"));
+console.log(localStorage.getItem("gameArrayInStorage"));
 if(JSON.parse(localStorage.getItem("gameArrayInStorage")) != null){
     gameArray =JSON.parse(localStorage.getItem("gameArrayInStorage"));
 }    
@@ -37,7 +36,7 @@ function renderImg(obj){
         // console.log(imgRatio);
         // adding this to filter out the image that has ratio not fit the layout
         if(imgRatio<2.3&& imgRatio>1.4 && obj.data[i].images.original_still.width >200){    
-            console.log("right size");
+            // console.log("right size");
             var newDiv =$("<div>").attr("class","imgWrap jumbotron col-md-3 col-sm-4 col-xs-6");
             var newImg = $("<img>").attr("src", obj.data[i].images.original_still.url);
             newImg.attr("class","images");
@@ -55,8 +54,10 @@ function renderImg(obj){
 
 //define a variable to capture user click and store button's value into the var
 var currentQueryVar;
-$(document).on("click", "#searchField", function(){
-    currentQueryVar = $(this).val();
+$(document).on("click", "#searchButton", function(event){
+    event.preventDefault();
+
+    currentQueryVar = $("#searchField").val();
     console.log(currentQueryVar);
     var currentURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + currentQueryVar +"key=AIzaSyBGnYxlsr-8atPpbWbMsM2crsD-kah9JAI";
 
@@ -65,18 +66,35 @@ $(document).on("click", "#searchField", function(){
         method: "GET"
     }).then(function(response){
         console.log(response);
+        // $("#contentContainer").text(JSON.stringify(response));
         // renderImg(response);
     });
 });
 
-// render first page with some default content
-var defaultURL = "https://api.giphy.com/v1/gifs/search?q=" + gameArray[2] + "&api_key=dc6zaTOxFJmzC&limit=15"
-$.ajax({
-    url:defaultURL,
-    method: "GET"
-}).then(function(response){
-    renderImg(response);
+//user click the imgButtons calling google place api
+
+var foodQueryVar;
+var lat =37.4228775;  // need to pass in those parameters by parsing data from google geo coding api
+var lon = -122.085133;      // for now testing purpose just assign some value
+$(document).on("click", ".imgButtons", function(){
+
+    foodQueryVar = $(this).attr("data-type");
+    console.log(foodQueryVar);
+
+
+    var currentURL = "http://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lon+"&radius=3000&type=restaurant&keyword="+foodQueryVar+ "&key=AIzaSyBGnYxlsr-8atPpbWbMsM2crsD-kah9JAI";
+//query example https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.4228775,-122.085133&radius=3000&type=restaurant&keyword=vegan&key=AIzaSyBGnYxlsr-8atPpbWbMsM2crsD-kah9JAI
+    console.log(currentURL);
+    $.ajax({
+        url:currentURL,
+        method: "GET"
+    }).then(function(response){
+        console.log(response);
+        // $("#contentContainer").text(JSON.stringify(response));
+        // renderImg(response);
+    });
 });
+
 
 // change image src after click event happening on the images
 $(document).on("click",".images",function(){
@@ -104,16 +122,4 @@ $("#add-game").on("click", function(event) {
     }
     //Render the new Button
     $("#game-input").val("");
-});
-
-// $("#game-input").on("change",function(){
-//     var game = $("#game-input").val().trim();
-//     // The game from the textbox is then added to gameArray
-//     if(game!= ''){
-//         gameArray.push(game);
-//     }
-//     //Render the new Button
-//     renderUserButton(game);
-//     $("#game-input").val("");
-//     console.log(gameArray);
-// })
+})
