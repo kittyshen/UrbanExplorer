@@ -77,7 +77,7 @@ var map;
 var infowindow;
 
 function initMap() {
-  var pyrmont = {lat: 37.4140352, lng: -122.0932588};
+  var pyrmont = {lat: 37.4228775, lng: -122.085133};
 
   map = new google.maps.Map(document.getElementById('map'), {
     center: pyrmont,
@@ -88,14 +88,14 @@ function initMap() {
   var service = new google.maps.places.PlacesService(map);
   service.nearbySearch({
     location: pyrmont,
-    radius: 2000,
+    radius: 2500,
     type: ['restaurant'],
-    keyword:"chinese",
+    keyword:"coffee",
   }, callback);
 }
 
-  service = new google.maps.places.PlacesService(map);
-  service.nearbySearch(request, callback);
+//   service = new google.maps.places.PlacesService(map);
+//   service.nearbySearch(request, callback);
 
 
 function callback(results, status) {
@@ -127,21 +127,21 @@ $(document).on("click", ".imgButtons", function(){
 
     foodQueryVar = $(this).attr("data-type");
     console.log(foodQueryVar);
+    initMap();
 
-
-    var currentURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lon+"&radius=3000&type=restaurant&keyword="+foodQueryVar+ "&key=AIzaSyBGnYxlsr-8atPpbWbMsM2crsD-kah9JAI";
-//query example https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.4228775,-122.085133&radius=3000&type=restaurant&keyword=vegan&key=AIzaSyBGnYxlsr-8atPpbWbMsM2crsD-kah9JAI
-    console.log(currentURL);
-    $.ajax({
-        // dataType: 'jsonp',
-        // headers: { 'Access-Control-Allow-Origin' : '*'},
-        url:currentURL,
-        method: "GET"
-    }).then(function(response){
-        console.log(response);
-        // $("#contentContainer").text(JSON.stringify(response));
-        // renderImg(response);
-    });
+//     var currentURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lon+"&radius=3000&type=restaurant&keyword="+foodQueryVar+ "&key=AIzaSyBGnYxlsr-8atPpbWbMsM2crsD-kah9JAI";
+// //query example https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=37.4228775,-122.085133&radius=3000&type=restaurant&keyword=vegan&key=AIzaSyBGnYxlsr-8atPpbWbMsM2crsD-kah9JAI
+//     console.log(currentURL);
+//     $.ajax({
+//         // dataType: 'jsonp',
+//         // headers: { 'Access-Control-Allow-Origin' : '*'},
+//         url:currentURL,
+//         method: "GET"
+//     }).then(function(response){
+//         console.log(response);
+//         // $("#contentContainer").text(JSON.stringify(response));
+//         // renderImg(response);
+//     });
 });
 
 
