@@ -18,7 +18,7 @@ function renderButtons(arr){             // create a function to render current 
         buttonHooker.append(newDiv);
     }
 }
-renderButtons(foodArray);   //render game array button to html page
+// renderButtons(foodArray);   //render game array button to html page
 
 
 
@@ -73,19 +73,39 @@ $(document).on("click", "#searchButton", function(event){
         //call weather api to extract weather information using cityname as parameter
         var APIKey = "abbf303e9278b19a5d3d88db00f23d48";
         // Here we are building the URL we need to query the database
-        var queryURL = "https://api.openweathermap.org/data/2.5/weather?q="+cityName+"&appid=" + APIKey;
+        var queryURL = "https://api.openweathermap.org/data/2.5/weather?q="+cityName+"&units=imperial&appid=" + APIKey;
+        
+        //*************  OpenWeatherMap API ***************
         //inner ajax call
         $.ajax({
             url:queryURL,
             method:"GET"
         }).then(function(response){
             console.log(queryURL);
+            // Log the resulting object
             console.log(response);
-            var temperature =response.main.temp ;
-            var tempF = (temperature-273.15) * 1.8 +32;
-            $("#contentContainer").text("");
-            $("#contentContainer").append("<br><h2>Temperature in F: "+tempF +"</h2>");
-        })
+            // Transfer content to HTML
+            var weatherHooker = $("#cityWeather"); // get hold of the cityweaher class container prepare to append to this div
+            weatherHooker.empty();  // empty the contents inside this container to avoid overlapping append
+            var newCity = $("<div>").attr("class", "city text-center");  // create city div
+            var newTemp = $("<div>").attr("class", "temp text-center");    // create temp div
+            var newThermo = $("<img>").attr("src", "assets/images/thermo.png");
+            newThermo.attr("width","25px");
+            newTemp.append(newThermo);
+            weatherHooker.append(newCity,newTemp);
+
+
+            $(".city").html("<h5>" + response.name + " Weather </h5>");
+            // $(".wind").text("Wind Speed: " + response.wind.speed);
+            // $(".humidity").text("Humidity: " + response.main.humidity);
+            $(".temp").prepend($("<span>").text("Temperature (F) " + response.main.temp));
+          
+        });
+        //*************  OpenWeatherMap API ends here ***************
+
+        // Render food type buttons to allow user to choose food
+        $("#foodButtonWrapper").empty();
+        renderButtons(foodArray);   //render food array button to html page
     
     });
 });
