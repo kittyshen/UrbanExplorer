@@ -138,7 +138,7 @@ function callback(results, status) {
 var foodQueryVar;
 
 $(document).on("click", ".imgButtons", function(){
-    foodQueryVar = $(this).attr("data-type");
+    foodQueryVar = $(this).attr("data-foodtype");
     console.log(foodQueryVar);
     initMap();
 });
