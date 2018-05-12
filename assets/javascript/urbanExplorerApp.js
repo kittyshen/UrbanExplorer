@@ -1,44 +1,50 @@
 
 var foodArray = ["drink", "coffee", "fastfood", "vegan", "asia", "steak"];
+var foodIconArray =["assets/images/00.png","assets/images/01.png","assets/images/02.png","assets/images/03.png","assets/images/04.png","assets/images/05.png"];
 
-var buttonHooker = $("#buttonGroup");  // create a variable to hook all buttons ad future user input append
+var buttonHooker = $("#foodButtonWrapper");  // create a variable to hook all buttons ad future user input append
 
 function renderButtons(arr){             // create a function to render current game array as  buttons
     for (var i = 0; i <arr.length; i++){
-        var newButton = $("<button>");
-        newButton.text(arr[i]);
-        newButton.attr("class","buttons text-center badge badge-pill badge-secondary");
-        newButton.attr("value",arr[i]);
-        buttonHooker.append(newButton);
+
+        var newDiv =$("<div>").attr("class","imgWrap jumbotron col-md-3 col-sm-4 col-xs-6");
+        var newImg = $("<img>").attr("src", foodIconArray[i]);
+        newImg.attr("class","imgButtons");
+        // newImg.attr("data-hover",foodIconArrayHover[i]);
+        newImg.attr("data-foodtype",foodArray[i]);
+        var newP = $("<p>").text(foodArray[i]);
+        newP.attr("class","text-center");
+        newDiv.append(newImg,newP);
+        buttonHooker.append(newDiv);
     }
 }
 renderButtons(foodArray);   //render game array button to html page
 
 
 
-function renderImg(obj){
-    $("#gifContainer").html("");  // empty the container for new content;
-    for(var i =0; i<obj.data.length; i++ ){
-        // console.log(obj.data[i].images.original_still.url);
-        var imgRatio = obj.data[i].images.original_still.width/obj.data[i].images.original_still.height;
-        // console.log(imgRatio);
-        // adding this to filter out the image that has ratio not fit the layout
-        if(imgRatio<2.3&& imgRatio>1.4 && obj.data[i].images.original_still.width >200){    
-            // console.log("right size");
-            var newDiv =$("<div>").attr("class","imgWrap jumbotron col-md-3 col-sm-4 col-xs-6");
-            var newImg = $("<img>").attr("src", obj.data[i].images.original_still.url);
-            newImg.attr("class","images");
-            newImg.attr("data-still",obj.data[i].images.original.url);
-            newImg.attr("data-animate",obj.data[i].images.original_still.url);
-            newImg.attr("data-state","still");
-            var newP = $("<p>").text(obj.data[i].title);
-            newP.attr("class","text-center");
-            newP.append("<br> Rating: "+obj.data[i].rating);
-            newDiv.append(newImg,newP);
-            $("#gifContainer").append(newDiv);
-        }
-    } 
-}
+// function renderImg(obj){
+//     $("#gifContainer").html("");  // empty the container for new content;
+//     for(var i =0; i<obj.data.length; i++ ){
+//         // console.log(obj.data[i].images.original_still.url);
+//         var imgRatio = obj.data[i].images.original_still.width/obj.data[i].images.original_still.height;
+//         // console.log(imgRatio);
+//         // adding this to filter out the image that has ratio not fit the layout
+//         if(imgRatio<2.3&& imgRatio>1.4 && obj.data[i].images.original_still.width >200){    
+//             // console.log("right size");
+//             var newDiv =$("<div>").attr("class","imgWrap jumbotron col-md-3 col-sm-4 col-xs-6");
+//             var newImg = $("<img>").attr("src", obj.data[i].images.original_still.url);
+//             newImg.attr("class","images");
+//             newImg.attr("data-still",obj.data[i].images.original.url);
+//             newImg.attr("data-animate",obj.data[i].images.original_still.url);
+//             newImg.attr("data-state","still");
+//             var newP = $("<p>").text(obj.data[i].title);
+//             newP.attr("class","text-center");
+//             newP.append("<br> Rating: "+obj.data[i].rating);
+//             newDiv.append(newImg,newP);
+//             $("#gifContainer").append(newDiv);
+//         }
+//     } 
+// }
 
 //define a variable to capture user click and store button's value into the var
 var currentQueryVar;
@@ -54,8 +60,33 @@ $(document).on("click", "#searchButton", function(event){
         method: "GET"
     }).then(function(response){
         console.log(response);
-        // $("#contentContainer").text(JSON.stringify(response));
-        // renderImg(response);
+        // console.log("the formatted address is: " + response.results[0].formatted_address)
+        //address geometry
+        var addressGeometryLat = response.results[0].geometry.location.lat
+        console.log("the geometry of location latitude is: " + response.results[0].geometry.location.lat)
+        var addressGeometryLong = response.results[0].geometry.location.lng
+        console.log("the geometry of location longitude is: " + response.results[0].geometry.location.lng)
+        //we are going to use the cityName variable to use in weather API AJAX
+        var cityName = response.results[0].address_components[3].long_name
+        console.log("the name of the city is: " + response.results[0].address_components[3].long_name)
+    
+        //call weather api to extract weather information using cityname as parameter
+        var APIKey = "abbf303e9278b19a5d3d88db00f23d48";
+        // Here we are building the URL we need to query the database
+        var queryURL = "https://api.openweathermap.org/data/2.5/weather?q="+cityName+"&appid=" + APIKey;
+        //inner ajax call
+        $.ajax({
+            url:queryURL,
+            method:"GET"
+        }).then(function(response){
+            console.log(queryURL);
+            console.log(response);
+            var temperature =response.main.temp ;
+            var tempF = (temperature-273.15) * 1.8 +32;
+            $("#contentContainer").text("");
+            $("#contentContainer").append("<br><h2>Temperature in F: "+tempF +"</h2>");
+        })
+    
     });
 });
 
@@ -83,7 +114,6 @@ function initMap() {
 }
 
 
-
 function callback(results, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     for (var i = 0; i < results.length; i++) {
@@ -106,14 +136,11 @@ function callback(results, status) {
 //user click the imgButtons calling google place api
 
 var foodQueryVar;
-var lat =37.4228775;  // need to pass in those parameters by parsing data from google geo coding api
-var lon = -122.085133;      // for now testing purpose just assign some value
-$(document).on("click", ".imgButtons", function(){
 
+$(document).on("click", ".imgButtons", function(){
     foodQueryVar = $(this).attr("data-type");
     console.log(foodQueryVar);
     initMap();
-
 });
 
 
