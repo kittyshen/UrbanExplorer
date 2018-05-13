@@ -85,7 +85,7 @@ $(document).on("click", "#searchButton", function(event){
     
     });
 });
-
+        renderButtons(foodArray);   //render food array button to html page
 
 // testing google own method
 var map;
@@ -103,7 +103,7 @@ function initMap(x) {   //modded
   var service = new google.maps.places.PlacesService(map);
   service.nearbySearch({
     location: pyrmont,
-    radius: 3500,
+    radius: 2500,
     type: ['restaurant'],
     keyword: x, //modded
   }, callback);
@@ -111,11 +111,15 @@ function initMap(x) {   //modded
 
 
 function callback(results, status) {
+
   if (status == google.maps.places.PlacesServiceStatus.OK) {
+    
+    var arrayRestaurantInfo =[];  // define array to capture the google place info store multiple restarunt
     for (var i = 0; i < results.length; i++) {
         var place = results[i];
-        var arrayRestaurantInfo = [];
-        arrayRestaurantInfo.push(i,place.name,place.vicinity,"498483",place.rating,place.opening_hours.open_now)
+        var Info =[];  // define array to capture the info of one restaurant
+        //push into info array data we filtered out
+        Info.push(place.name, place.vicinity, "3", place.rating, place.opening_hours.open_now)
         console.log(place.name);
         // console.log(place.place_id);
         console.log(place.rating);
@@ -126,9 +130,15 @@ function callback(results, status) {
         // var types = String(place.types);
         // types = types.split(",");
         // console.log(types[0]);
-        console.log(arrayRestaurantInfo);
-        return arrayRestaurantInfo;
+        console.log(Info);
+        arrayRestaurantInfo.push(Info);  // push one restaurant into restaurant array
     }
+    console.log(arrayRestaurantInfo);
+
+    return arrayRestaurantInfo;  // return the array after capture all data
+    // localStorage.setItem("restaurantArray",JSON.stringfy(arrayRestaurantInfo));
+    // console.log(localStorage.getItem("restaurantArray"));
+    
   }
 }
 
@@ -142,11 +152,15 @@ $(document).on("click", ".imgButtons", function(){
 
     foodQueryVar = $(this).attr("data-foodtype");
     console.log(foodQueryVar);
-    initMap(foodQueryVar); //modded
+    setTimeout(f(),3000)
+    var arrayBackFromPlaceApi =  initMap(foodQueryVar);  // JSON.parse(localStorage.getItem("restaurantArray")) ;
+//["ded","deded"]//
     //testing render
+    console.log(arrayBackFromPlaceApi);
+
     renderTableHeader();
-    for(var i = 0; i<5 ; i++){
-    renderTableData(1,"this rest","here kitty kitty",983298, 0.8,4.5);
+    for(var i = 0; i<arrayBackFromPlaceApi.length ; i++){
+        renderTableData(i,arrayBackFromPlaceApi[i][0],arrayBackFromPlaceApi[i][1],arrayBackFromPlaceApi[i][2],arrayBackFromPlaceApi[i][3],arrayBackFromPlaceApi[i][4]);
     }
 });
 
@@ -162,15 +176,15 @@ $(document).on("mouseover", ".imgButtons", function(){
 function renderTableHeader(){
     var tableHooker = $("#contentContainer");
     var table = $("<table>").attr("class","table table-striped table-dark");
-    var thead = $("<thead>").html("<tr><th scope=\"col\"></th><th scope=\"col\">Name of Place</th><th scope=\"col\">Address</th><th scope=\"col\">Phone Number</th><th scope=\"col\">Appx Distance(Miles)</th><th scope=\"col\">Rating(Max 5.0)</th><th scope=\"col\">Open</th></tr>");
+    var thead = $("<thead>").html("<tr><th scope=\"col\"></th><th scope=\"col\">Name of Place</th><th scope=\"col\">Address</th><th scope=\"col\">Appx Distance(Miles)</th><th scope=\"col\">Rating(Max 5.0)</th><th scope=\"col\">Open</th></tr>");
     var tbody = $("<tbody>").attr("id","table-content"); // define tbody id hooker to make future data append easier
     table.append(thead,tbody);
     tableHooker.append(table);
 }
 
 // define a recallable table body render to fill in the table data
-function renderTableData(a,b,c,d,e,f,g){
+function renderTableData(a,b,c,d,e,f){
     var tableContentHooker = $("#table-content");
-    var tdata = $("<tr>").html("<td scope=\"row\">"+a+"</td><td scope=\"col\">"+b+"</td><td scope=\"col\">"+c+"</td><td scope=\"col\">"+d+"</td><td scope=\"col\">"+e+"</td><td scope=\"col\">"+f+"</td ><td scope=\"col\">"+g+"</td>");
+    var tdata = $("<tr>").html("<td scope=\"row\">"+a+"</td><td scope=\"col\">"+b+"</td><td scope=\"col\">"+c+"</td><td scope=\"col\">"+d+"</td><td scope=\"col\">"+e+"</td><td scope=\"col\">"+f+"</td >");
     tableContentHooker.append(tdata);
 }
