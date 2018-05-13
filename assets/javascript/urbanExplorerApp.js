@@ -2,6 +2,9 @@
 var foodArray = ["drink", "coffee", "fastfood", "vegan", "asia", "steak"];
 var foodIconArray =["assets/images/00.png","assets/images/01.png","assets/images/02.png","assets/images/03.png","assets/images/04.png","assets/images/05.png"];
 // var foodIconArrayHover =["assets/images/00i.png","assets/images/01i.png","assets/images/02i.png","assets/images/03i.png","assets/images/04i.png","assets/images/05i.png"];  //added
+var addressGeometryLat = 0;
+var addressGeometryLong = 0;
+var cityName;
 
 var buttonHooker = $("#foodButtonWrapper");  // create a variable to hook all buttons ad future user input append
 
@@ -38,12 +41,12 @@ $(document).on("click", "#searchButton", function(event){
         console.log(response);
         // console.log("the formatted address is: " + response.results[0].formatted_address)
         //address geometry
-        var addressGeometryLat = response.results[0].geometry.location.lat
+        addressGeometryLat = response.results[0].geometry.location.lat
         console.log("the geometry of location latitude is: " + response.results[0].geometry.location.lat)
-        var addressGeometryLong = response.results[0].geometry.location.lng
+        addressGeometryLong = response.results[0].geometry.location.lng
         console.log("the geometry of location longitude is: " + response.results[0].geometry.location.lng)
         //we are going to use the cityName variable to use in weather API AJAX
-        var cityName = response.results[0].address_components[3].long_name
+        cityName = response.results[0].address_components[3].long_name
         console.log("the name of the city is: " + response.results[0].address_components[3].long_name)
     
         //call weather api to extract weather information using cityname as parameter
@@ -87,12 +90,14 @@ $(document).on("click", "#searchButton", function(event){
 });
         renderButtons(foodArray);   //render food array button to html page
 
+
+
 // testing google own method
 var map;
 // var infowindow;
 
 function initMap(x) {   //modded
-  var pyrmont = {lat: 37.4228775, lng: -122.085133};
+  var pyrmont = {lat: addressGeometryLat, lng: addressGeometryLong};
 
   map = new google.maps.Map(document.getElementById('map'), {
     center: pyrmont,
@@ -103,17 +108,16 @@ function initMap(x) {   //modded
   var service = new google.maps.places.PlacesService(map);
   service.nearbySearch({
     location: pyrmont,
-    radius: 2500,
+    radius: 3000,
     type: ['restaurant'],
     keyword: x, //modded
   }, callback);
 }
 
-
 function callback(results, status) {
 
   if (status == google.maps.places.PlacesServiceStatus.OK) {
-    $("#contentContainer").empty();
+    $("#contentContainer").empty();  // empty out the table area in a new circle
     renderTableHeader();  //render table data
 
     // var arrayRestaurantInfo =[];  // define array to capture the google place info store multiple restarunt
@@ -141,8 +145,7 @@ function callback(results, status) {
 
     // return arrayRestaurantInfo;  // return the array after capture all data
     // localStorage.setItem("restaurantArray",JSON.stringfy(arrayRestaurantInfo));
-    // console.log(localStorage.getItem("restaurantArray"));
-    
+    // console.log(localStorage.getItem("restaurantArray"));  
   }
 }
 
@@ -153,6 +156,7 @@ function callback(results, status) {
 var foodQueryVar;
 
 $(document).on("click", ".imgButtons", function(){
+console.log(addressGeometryLat, addressGeometryLong, cityName);
 
     foodQueryVar = $(this).attr("data-foodtype");
     console.log(foodQueryVar);
