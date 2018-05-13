@@ -113,13 +113,15 @@ function initMap(x) {   //modded
 function callback(results, status) {
 
   if (status == google.maps.places.PlacesServiceStatus.OK) {
-    
-    var arrayRestaurantInfo =[];  // define array to capture the google place info store multiple restarunt
+    $("#contentContainer").empty();
+    renderTableHeader();  //render table data
+
+    // var arrayRestaurantInfo =[];  // define array to capture the google place info store multiple restarunt
     for (var i = 0; i < results.length; i++) {
         var place = results[i];
         var Info =[];  // define array to capture the info of one restaurant
         //push into info array data we filtered out
-        Info.push(place.name, place.vicinity, "3", place.rating, place.opening_hours.open_now)
+        // Info.push(place.name, place.vicinity, "3", place.rating, place.opening_hours.open_now)
         console.log(place.name);
         // console.log(place.place_id);
         console.log(place.rating);
@@ -130,12 +132,14 @@ function callback(results, status) {
         // var types = String(place.types);
         // types = types.split(",");
         // console.log(types[0]);
-        console.log(Info);
-        arrayRestaurantInfo.push(Info);  // push one restaurant into restaurant array
-    }
-    console.log(arrayRestaurantInfo);
+        // console.log(Info);
+        // arrayRestaurantInfo.push(Info);  // push one restaurant into restaurant array
+        renderTableData(i,place.name, place.vicinity,"not sure yet", place.rating, place.opening_hours.open_now);
 
-    return arrayRestaurantInfo;  // return the array after capture all data
+    }
+    // console.log(arrayRestaurantInfo);
+
+    // return arrayRestaurantInfo;  // return the array after capture all data
     // localStorage.setItem("restaurantArray",JSON.stringfy(arrayRestaurantInfo));
     // console.log(localStorage.getItem("restaurantArray"));
     
@@ -152,15 +156,9 @@ $(document).on("click", ".imgButtons", function(){
 
     foodQueryVar = $(this).attr("data-foodtype");
     console.log(foodQueryVar);
-    var arrayBackFromPlaceApi =  initMap(foodQueryVar);  // JSON.parse(localStorage.getItem("restaurantArray")) ;
-//["ded","deded"]//
-    //testing render
-    console.log(arrayBackFromPlaceApi);
+    initMap(foodQueryVar);
+    // console.log(arrayBackFromPlaceApi);
 
-    renderTableHeader();
-    for(var i = 0; i<arrayBackFromPlaceApi.length ; i++){
-        renderTableData(i,arrayBackFromPlaceApi[i][0],arrayBackFromPlaceApi[i][1],arrayBackFromPlaceApi[i][2],arrayBackFromPlaceApi[i][3],arrayBackFromPlaceApi[i][4]);
-    }
 });
 
 //add hover effect  //added
