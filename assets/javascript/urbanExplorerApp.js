@@ -1,6 +1,7 @@
 
 var foodArray = ["drink", "coffee", "fastfood", "vegan", "asia", "steak"];
 var foodIconArray =["assets/images/00.png","assets/images/01.png","assets/images/02.png","assets/images/03.png","assets/images/04.png","assets/images/05.png"];
+// var foodIconArrayHover =["assets/images/00i.png","assets/images/01i.png","assets/images/02i.png","assets/images/03i.png","assets/images/04i.png","assets/images/05i.png"];  //added
 
 var buttonHooker = $("#foodButtonWrapper");  // create a variable to hook all buttons ad future user input append
 
@@ -11,7 +12,8 @@ function renderButtons(arr){             // create a function to render current 
         var newImg = $("<img>").attr("src", foodIconArray[i]);
         newImg.attr("class","imgButtons");
         // newImg.attr("data-hover",foodIconArrayHover[i]);
-        newImg.attr("data-foodtype",foodArray[i]);
+        newImg.attr("data-foodtype",foodArray[i]);  
+        newImg.attr("data-foodindex",i);        // added
         var newP = $("<p>").text(foodArray[i]);
         newP.attr("class","text-center");
         newDiv.append(newImg,newP);
@@ -19,32 +21,6 @@ function renderButtons(arr){             // create a function to render current 
     }
 }
 // renderButtons(foodArray);   //render game array button to html page
-
-
-
-// function renderImg(obj){
-//     $("#gifContainer").html("");  // empty the container for new content;
-//     for(var i =0; i<obj.data.length; i++ ){
-//         // console.log(obj.data[i].images.original_still.url);
-//         var imgRatio = obj.data[i].images.original_still.width/obj.data[i].images.original_still.height;
-//         // console.log(imgRatio);
-//         // adding this to filter out the image that has ratio not fit the layout
-//         if(imgRatio<2.3&& imgRatio>1.4 && obj.data[i].images.original_still.width >200){    
-//             // console.log("right size");
-//             var newDiv =$("<div>").attr("class","imgWrap jumbotron col-md-3 col-sm-4 col-xs-6");
-//             var newImg = $("<img>").attr("src", obj.data[i].images.original_still.url);
-//             newImg.attr("class","images");
-//             newImg.attr("data-still",obj.data[i].images.original.url);
-//             newImg.attr("data-animate",obj.data[i].images.original_still.url);
-//             newImg.attr("data-state","still");
-//             var newP = $("<p>").text(obj.data[i].title);
-//             newP.attr("class","text-center");
-//             newP.append("<br> Rating: "+obj.data[i].rating);
-//             newDiv.append(newImg,newP);
-//             $("#gifContainer").append(newDiv);
-//         }
-//     } 
-// }
 
 //define a variable to capture user click and store button's value into the var
 var currentQueryVar;
@@ -115,7 +91,7 @@ $(document).on("click", "#searchButton", function(event){
 var map;
 // var infowindow;
 
-function initMap() {
+function initMap(x) {   //modded
   var pyrmont = {lat: 37.4228775, lng: -122.085133};
 
   map = new google.maps.Map(document.getElementById('map'), {
@@ -129,7 +105,7 @@ function initMap() {
     location: pyrmont,
     radius: 3500,
     type: ['restaurant'],
-    keyword:'steak',
+    keyword: x, //modded
   }, callback);
 }
 
@@ -138,15 +114,20 @@ function callback(results, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     for (var i = 0; i < results.length; i++) {
         var place = results[i];
+        var arrayRestaurantInfo = [];
+        arrayRestaurantInfo.push(i,place.name,place.vicinity,"498483",place.rating,place.opening_hours.open_now)
         console.log(place.name);
         // console.log(place.place_id);
         console.log(place.rating);
         console.log(place.vicinity);
         console.log("lat = " +place.geometry.location.lat());
         console.log("lon = " +place.geometry.location.lng());
-        var types = String(place.types);
-        types = types.split(",");
-        console.log(types[0]);
+        console.log("Open? "+place.opening_hours.open_now);  // modded
+        // var types = String(place.types);
+        // types = types.split(",");
+        // console.log(types[0]);
+        console.log(arrayRestaurantInfo);
+        return arrayRestaurantInfo;
     }
   }
 }
@@ -158,23 +139,38 @@ function callback(results, status) {
 var foodQueryVar;
 
 $(document).on("click", ".imgButtons", function(){
+
     foodQueryVar = $(this).attr("data-foodtype");
     console.log(foodQueryVar);
-    initMap();
+    initMap(foodQueryVar); //modded
+    //testing render
+    renderTableHeader();
+    for(var i = 0; i<5 ; i++){
+    renderTableData(1,"this rest","here kitty kitty",983298, 0.8,4.5);
+    }
+});
+
+//add hover effect  //added
+$(document).on("mouseover", ".imgButtons", function(){
+    $(this).hover(function(){$(this).attr("src","assets/images/0"+$(this).attr("data-foodindex") +"i.png")},
+                  function(){$(this).attr("src","assets/images/0"+$(this).attr("data-foodindex") +".png")});
 });
 
 
-// change image src after click event happening on the images
-$(document).on("click",".images",function(){
-    if($(this).attr("data-state") == "still"){
-        console.log("hello");
-        $(this).attr("src",$(this).attr("data-animate"));
-        $(this).attr("data-state","animate");
-    }
-    else{
-        $(this).attr("src",$(this).attr("data-still"));
-        $(this).attr("data-state","still");
-    }
+//added
+// separate table header render from tbody data.
+function renderTableHeader(){
+    var tableHooker = $("#contentContainer");
+    var table = $("<table>").attr("class","table table-striped table-dark");
+    var thead = $("<thead>").html("<tr><th scope=\"col\"></th><th scope=\"col\">Name of Place</th><th scope=\"col\">Address</th><th scope=\"col\">Phone Number</th><th scope=\"col\">Appx Distance(Miles)</th><th scope=\"col\">Rating(Max 5.0)</th><th scope=\"col\">Open</th></tr>");
+    var tbody = $("<tbody>").attr("id","table-content"); // define tbody id hooker to make future data append easier
+    table.append(thead,tbody);
+    tableHooker.append(table);
+}
 
-});
-
+// define a recallable table body render to fill in the table data
+function renderTableData(a,b,c,d,e,f,g){
+    var tableContentHooker = $("#table-content");
+    var tdata = $("<tr>").html("<td scope=\"row\">"+a+"</td><td scope=\"col\">"+b+"</td><td scope=\"col\">"+c+"</td><td scope=\"col\">"+d+"</td><td scope=\"col\">"+e+"</td><td scope=\"col\">"+f+"</td ><td scope=\"col\">"+g+"</td>");
+    tableContentHooker.append(tdata);
+}
