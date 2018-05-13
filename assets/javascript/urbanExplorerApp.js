@@ -152,7 +152,6 @@ $(document).on("click", ".imgButtons", function(){
 
     foodQueryVar = $(this).attr("data-foodtype");
     console.log(foodQueryVar);
-    setTimeout(f(),3000)
     var arrayBackFromPlaceApi =  initMap(foodQueryVar);  // JSON.parse(localStorage.getItem("restaurantArray")) ;
 //["ded","deded"]//
     //testing render
