@@ -1,5 +1,5 @@
 
-var foodArray = ["drink", "coffee", "fastfood", "vegan", "asia", "steak"];
+var foodArray = ["drink", "coffee", "fastfood", "vegan", "asian", "steak"];
 var foodIconArray =["assets/images/00.png","assets/images/01.png","assets/images/02.png","assets/images/03.png","assets/images/04.png","assets/images/05.png"];
 // var foodIconArrayHover =["assets/images/00i.png","assets/images/01i.png","assets/images/02i.png","assets/images/03i.png","assets/images/04i.png","assets/images/05i.png"];  //added
 var addressGeometryLat = 0;
@@ -88,10 +88,10 @@ $(document).on("click", "#searchButton", function(event){
     
     });
 });
-        renderButtons(foodArray);   //render food array button to html page
+        // renderButtons(foodArray);   //render food array button to html page
 
 
-
+//user click the imgButtons calling google place api
 // testing google own method
 var map;
 // var infowindow;
@@ -113,6 +113,7 @@ function initMap(x) {   //modded
     keyword: x, //modded
   }, callback);
 }
+//notes to myself to revise the code, some restaurant don't have the open_now infomation, need to filter them out, otherwise will interuput the render
 
 function callback(results, status) {
 
@@ -126,21 +127,27 @@ function callback(results, status) {
         var Info =[];  // define array to capture the info of one restaurant
         //push into info array data we filtered out
         // Info.push(place.name, place.vicinity, "3", place.rating, place.opening_hours.open_now)
-        console.log(place.name);
+        console.log(place.name); //restaurant name
         // console.log(place.place_id);
-        console.log(place.rating);
-        console.log(place.vicinity);
-        console.log("lat = " +place.geometry.location.lat());
-        console.log("lon = " +place.geometry.location.lng());
-        console.log("Open? "+place.opening_hours.open_now);  // modded
+        console.log(place.rating);      //restaurant rating
+        console.log(place.vicinity);    //restaurant address
+        console.log("lat = " +place.geometry.location.lat());   //restaurant lat info
+        console.log("lon = " +place.geometry.location.lng());   //restaurant long info
+        console.log("Open? "+place.opening_hours.open_now);  //restaurant still opening or not
+
         // var types = String(place.types);
         // types = types.split(",");
         // console.log(types[0]);
         // console.log(Info);
         // arrayRestaurantInfo.push(Info);  // push one restaurant into restaurant array
-        renderTableData(i,place.name, place.vicinity,"not sure yet", place.rating, place.opening_hours.open_now);
+        function calcDist(x1,y1,x2,y2){
+            return (Math.round((Math.abs(x1-x2)*69 + Math.abs(y1-y2)*69)* 10) / 10)
+        }
+        var distance = calcDist(addressGeometryLat,addressGeometryLong, place.geometry.location.lat(), place.geometry.location.lng());
+        renderTableData(i+1, place.name, place.vicinity, distance , place.rating, place.opening_hours.open_now);
 
     }
+
     // console.log(arrayRestaurantInfo);
 
     // return arrayRestaurantInfo;  // return the array after capture all data
@@ -162,6 +169,7 @@ console.log(addressGeometryLat, addressGeometryLong, cityName);
     console.log(foodQueryVar);
     initMap(foodQueryVar);
     // console.log(arrayBackFromPlaceApi);
+    $("#landing-filler-top-wrapper").empty();
 
 });
 
@@ -177,7 +185,7 @@ $(document).on("mouseover", ".imgButtons", function(){
 function renderTableHeader(){
     var tableHooker = $("#contentContainer");
     var table = $("<table>").attr("class","table table-striped table-dark");
-    var thead = $("<thead>").html("<tr><th scope=\"col\"></th><th scope=\"col\">Name of Place</th><th scope=\"col\">Address</th><th scope=\"col\">Appx Distance(Miles)</th><th scope=\"col\">Rating(Max 5.0)</th><th scope=\"col\">Open</th></tr>");
+    var thead = $("<thead>").html("<tr><th scope=\"col\"></th><th scope=\"col\">Name of Place</th><th scope=\"col\">Address</th><th scope=\"col\">Appx Distance (Miles)</th><th scope=\"col\">Rating (Max 5.0)</th><th scope=\"col\">Open</th></tr>");
     var tbody = $("<tbody>").attr("id","table-content"); // define tbody id hooker to make future data append easier
     table.append(thead,tbody);
     tableHooker.append(table);
@@ -188,4 +196,5 @@ function renderTableData(a,b,c,d,e,f){
     var tableContentHooker = $("#table-content");
     var tdata = $("<tr>").html("<td scope=\"row\">"+a+"</td><td scope=\"col\">"+b+"</td><td scope=\"col\">"+c+"</td><td scope=\"col\">"+d+"</td><td scope=\"col\">"+e+"</td><td scope=\"col\">"+f+"</td >");
     tableContentHooker.append(tdata);
+
 }
