@@ -31,15 +31,14 @@ $(document).on("click", "#searchButton", function(event){
     event.preventDefault();
     $("#contentContainer").empty();  // empty out the table area in a new circle
 
-    //starting here to update the logo and weather position
-    //move the log to the top left corner
-    $("#futureLogo").html("<img src =\"assets/images/sitelogo-invert.png\" style = \"margin-left:2em;\"alt =\"site logo\">");
-    //delete the old logo
-    $("#Logo").empty();
-    //ending here update the logo and weather position
-
-
     currentQueryVar = $("#searchField").val();
+    if(currentQueryVar != "" ){
+        $("#futureLogo").html("<img src =\"assets/images/sitelogo-invert.png\" style = \"margin-left:2em;\"alt =\"site logo\">");
+            //delete the old logo
+        $("#Logo").empty();
+            //ending here update the logo and weather position
+        $("#contentContainer").empty();  // empty out the table area when user clicks search
+    }
     console.log(currentQueryVar);
     var currentURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + currentQueryVar +"key=AIzaSyBGnYxlsr-8atPpbWbMsM2crsD-kah9JAI";
 
@@ -196,11 +195,18 @@ $(document).one("click", ".imgButtons", function(){
 
 
 //add hover effect  //added
-$(document).on("mouseover", ".imgButtons", function(){
-    $(this).hover(function(){$(this).attr("src","assets/images/0"+$(this).attr("data-foodindex") +"i.png")},
-                  function(){$(this).attr("src","assets/images/0"+$(this).attr("data-foodindex") +".png")});
-});
-
+// $(document).on("mouseover", ".imgButtons", function(){
+//     $(this).hover(function(){$(this).attr("src","assets/images/0"+$(this).attr("data-foodindex") +"i.png")},
+//                   function(){$(this).attr("src","assets/images/0"+$(this).attr("data-foodindex") +".png")});
+// });
+$(document).on({
+    mouseenter:function(){
+        $(this).attr("src","assets/images/0"+$(this).attr("data-foodindex") +"i.png")
+    },
+    mouseleave:function(){
+        $(this).attr("src","assets/images/0"+$(this).attr("data-foodindex") +".png")
+    }
+},".imgButtons");
 
 //added
 // separate table header render from tbody data.
