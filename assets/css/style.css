@@ -21,7 +21,7 @@ body {
 }
 #brand{
     background-color: rgba(255, 255, 255, 0);
-    padding-left: 3em;
+    /* padding-left: 3em; */
 }
 .bg-dark{
     background-color: rgba(255, 255, 255, 0) !important;
@@ -30,7 +30,6 @@ body {
 .container{
     min-height:100%;
     /* background-color: rgba(0, 0, 0, 0.742); */
-
 }
 h1{
     font-size:2.3em;
@@ -54,6 +53,19 @@ h4{
     max-width: 170px;
     /* display: block;  */
 }
+.imgWrap >p {
+    /* visibility :hidden; */
+    color: rgba(68, 94, 160, 255);
+    font-size:0.9em;
+    font-weight:normal;
+    opacity:0;
+
+}
+.imgWrap:hover >p {
+    margin-top:-2.6em;
+    opacity:1;
+}
+
 
 .images{
     max-block-size: 200px;
@@ -72,7 +84,9 @@ h4{
     text-align:center;
     font-size: 1em;
 }
-  
+#myform{
+    margin-top:1.5em;
+}
 
 /* adjust bootstrap elements to mimic the assignment format*/
 
@@ -102,16 +116,16 @@ h4{
 
     /* box-shadow: 0.05em 0.05em rgb(146, 146, 146); */
 }
-
-
 .container{
     min-height:100%;
 }
 
 @media(max-width:768px) {
-    .images{
-        max-block-size: 170px;
-        max-width: 170px;
+#futureLogo > img {
+        /* max-block-size: 120px; */
+    max-block-size: 180px;
+    max-width: 180px;
+
     }
 }
 @media(max-width:578px) {
@@ -129,15 +143,19 @@ h4{
         font-size:1.2em;
     }
 
-    .imgCenter{
-        margin-left:0;
-        margin-right:auto;
-        width: 100%;
-    }
-    img{
+.imgButtons{
+    max-height: 120px;
+    display: block; 
+}
+.imgWrap{
+    max-height: 120px;
+    max-width: 120px;
+    /* display: block;  */
+}
+    /* img{
         max-block-size: 180px !important;
         float:left;
-    }
+    } */
 
    .col-xs-6, .col-sm-6{
         max-width: 50%;

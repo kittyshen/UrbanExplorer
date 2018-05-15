@@ -29,6 +29,15 @@ function renderButtons(arr){             // create a function to render current 
 var currentQueryVar;
 $(document).on("click", "#searchButton", function(event){
     event.preventDefault();
+    $("#contentContainer").empty();  // empty out the table area in a new circle
+
+    //starting here to update the logo and weather position
+    //move the log to the top left corner
+    $("#futureLogo").html("<img src =\"assets/images/sitelogo-invert.png\" style = \"margin-left:2em;\"alt =\"site logo\">");
+    //delete the old logo
+    $("#Logo").empty();
+    //ending here update the logo and weather position
+
 
     currentQueryVar = $("#searchField").val();
     console.log(currentQueryVar);
@@ -74,7 +83,7 @@ $(document).on("click", "#searchButton", function(event){
             weatherHooker.append(newCity,newTemp);
 
 
-            $(".city").html("<h5>" + response.name + " Weather </h5>");
+            $(".city").html("<h5>" + cityName + " Weather </h5>");
             // $(".wind").text("Wind Speed: " + response.wind.speed);
             // $(".humidity").text("Humidity: " + response.main.humidity);
             $(".temp").prepend($("<span>").text("Temperature (F) " + response.main.temp));
@@ -134,7 +143,8 @@ function callback(results, status) {
         console.log("lat = " +place.geometry.location.lat());   //restaurant lat info
         console.log("lon = " +place.geometry.location.lng());   //restaurant long info
         console.log("Open? "+place.opening_hours.open_now);  //restaurant still opening or not
-
+        if(place.opening_hours.open_now) place.opening_hours.open_now = "open";
+        else place.opening_hours.open_now = "close";
         // var types = String(place.types);
         // types = types.split(",");
         // console.log(types[0]);
@@ -163,15 +173,27 @@ function callback(results, status) {
 var foodQueryVar;
 
 $(document).on("click", ".imgButtons", function(){
-console.log(addressGeometryLat, addressGeometryLong, cityName);
+    console.log(addressGeometryLat, addressGeometryLong, cityName);
 
     foodQueryVar = $(this).attr("data-foodtype");
     console.log(foodQueryVar);
     initMap(foodQueryVar);
     // console.log(arrayBackFromPlaceApi);
-    $("#landing-filler-top-wrapper").empty();
+    // $("#landing-filler-top-wrapper").empty();
+    //change search field location
+    // $("#searchOriginal").empty();
+    // $("#top-right-oneThird").html("<form class=\"form-inline\" id =\"myform\"> <input class=\"form-control mr-sm-2\" type=\"search\" id= \"searchField\" placeholder=\"Enter Address\" aria-label=\"Search\"><button class=\"btn btn-outline-light my-2 my-sm-0\" id = \"searchButton\" type=\"submit\">Search</button></form>");
 
 });
+
+$(document).one("click", ".imgButtons", function(){
+
+    $("#landing-filler-top-wrapper").empty();
+    //Switch search bar location
+    $("#top-right-oneThird").html("<form class=\"form-inline\" id =\"myform\"> <input class=\"form-control mr-sm-2\" type=\"search\" id= \"searchField\" placeholder=\"Enter Address\" aria-label=\"Search\"><button class=\"btn btn-outline-light my-2 my-sm-0\" id = \"searchButton\" type=\"submit\">Search</button></form>");
+    $("#searchOriginal").html("");
+});
+
 
 //add hover effect  //added
 $(document).on("mouseover", ".imgButtons", function(){
